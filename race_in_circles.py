@@ -5,7 +5,7 @@ import pyautogui
 
 # Default parameters - these can be overridden with command
 # line arguments. See end of script for details.
-RACE_DURATION = 200
+RACE_DURATION = 265
 DIRECTION = "right"
 SILENCE = False
 
@@ -16,7 +16,7 @@ def press(key: str) -> None:
     Using vanilla `pyautogui.press()` will not register the keystroke
     because GT requires you hold a keypress for a small duration."""
     with pyautogui.hold(key):
-        time.sleep(0.2)
+        time.sleep(0.3)
 
 
 def hold(key: str, duration: float) -> None:
@@ -26,7 +26,7 @@ def hold(key: str, duration: float) -> None:
         time.sleep(duration)
 
 
-def ride_rail(direction: str) -> None:
+def race(direction: str) -> None:
     """
     This will drive a car around any convex hull while hugging
     the `direction` rail. If you pass `left`, your car will hug
@@ -34,72 +34,66 @@ def ride_rail(direction: str) -> None:
     """
 
     race_start = time.time()
-    with pyautogui.hold("up"):
+    with pyautogui.hold("enter"):
         while time.time() - race_start < RACE_DURATION:
             hold(direction, (random.randrange(200) / 1000))
             time.sleep((random.randrange(100) / 100))
 
 
-def race(direction: str) -> None:
-    """`direction` is the rail to hug, not the direction to turn!"""
-
-    ride_rail(direction)
-
-
 def end_race() -> None:
     """Navigate through post-race menus and replay."""
 
-    commands = [
-        "enter",
-        "enter",
-        "enter",
-        "enter",
-        "enter",
-        "enter",
-        "enter",
-        "right",
-        "enter",
-        "down",
-        "down",
-        "down",
-        "left",
-        "left",
-        "enter",
-    ]
-    for command in commands:
-        press(command)
-        time.sleep((random.randrange(500) / 1000) + 2)
+    press("enter")
+    press("enter")
+    press("enter")
+    press("enter")
+    press("enter")
+    press("enter")
+    press("enter")
+    press("enter")
+    press("enter")
+    press("enter")
+    press("enter")
+    time.sleep(3)
+    press("enter")
+    time.sleep(3)
+    press("right")
+    press("enter")
+    time.sleep(11)
+    press("enter")
+    press("right")
+    press("right")
+    press("right")
+    press("enter")
+    press("enter")
 
 
 def start_race(first: bool) -> None:
     """Initiate race from the start race menu."""
-    if first:
-        # Click center of screen to focus remote play window.
-        # You can reposition and resize remote play window, just
-        # make sure you update where you click. I don't know how to
-        # use pyautogui in headless mode.
-        width, height = pyautogui.size()
-        center = width / 2, height / 2
-        pyautogui.moveTo(center)
-        pyautogui.click()
-        time.sleep(1)
+    # Click center of screen to focus remote play window.
+    # You can reposition and resize remote play window, just
+    # make sure you update where you click. I don't know how to
+    # use pyautogui in headless mode.
+    width, height = pyautogui.size()
+    center = width / 2, height / 2
+    pyautogui.moveTo(center)
+    pyautogui.click()
+    time.sleep(1)
 
-        # This is the button sequence you press when the 'replay'
-        # button IS NOT visible on the race start screen.
-        press("down")
-        press("down")
-        press("down")
-        press("left")
-        press("enter")
-    else:
-        # This is the button sequence you press when the 'replay'
-        # button IS visible on the race start screen.
-        press("down")
-        press("down")
-        press("down")
-        press("left")
-        press("left")
-        press("enter")
+    # This is the button sequence you press when the 'replay'
+    # button IS NOT visible on the race start screen.
+    press("down")
+    press("right")
+    press("right")
+    press("right")
+    press("right")
+    press("right")
+    press("right")
+    press("enter")
+    press("enter")
+    time.sleep(11)
+    press("enter")
+    press("enter")
 
 
 if __name__ == "__main__":
@@ -126,9 +120,10 @@ if __name__ == "__main__":
     while True:
         start = time.time()
         start_race(first)
-        first = False
+        time.sleep(5)
         race(DIRECTION)
         end_race()
+        time.sleep(4)
         end = time.time()
         duration = end - start
         print(duration, flush=True)
